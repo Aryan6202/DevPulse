@@ -58,8 +58,19 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-connectDB().then(() => {
-  app.listen(PORT, () => console.log(`DevPulse API running on port ${PORT}`));
-});
+if (process.env.VERCEL) {
+  let cachedConnection = null;
+  app.use(async (req, res, next) => {
+    if (!cachedConnection) {
+      cachedConnection = connectDB();
+    }
+    await cachedConnection;
+    next();
+  });
+} else {
+  connectDB().then(() => {
+    app.listen(PORT, () => console.log(`DevPulse API running on port ${PORT}`));
+  });
+}
 
 module.exports = app;
