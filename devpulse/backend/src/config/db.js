@@ -4,8 +4,7 @@ async function connectDB() {
   const uri = process.env.MONGO_URI;
 
   if (!uri) {
-    console.error('MONGO_URI is not set. Add it to your .env file.');
-    process.exit(1);
+    throw new Error('MONGO_URI is not set. Add it to your environment variables.');
   }
 
   try {
@@ -14,7 +13,7 @@ async function connectDB() {
     console.log(`MongoDB connected: ${mongoose.connection.host}`);
   } catch (err) {
     console.error('MongoDB connection failed:', err.message);
-    process.exit(1);
+    throw err;
   }
 }
 

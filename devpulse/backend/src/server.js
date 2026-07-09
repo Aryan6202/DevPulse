@@ -12,6 +12,9 @@ const teamRoutes = require('./routes/team');
 
 const app = express();
 
+// Trust proxy for Vercel/reverse proxies (required for express-rate-limit)
+app.set('trust proxy', 1);
+
 // --- Security & core middleware ---
 app.use(helmet());
 app.use(express.json({ limit: '5mb' }));
@@ -61,11 +64,18 @@ const PORT = process.env.PORT || 5000;
 if (process.env.VERCEL) {
   let cachedConnection = null;
   app.use(async (req, res, next) => {
-    if (!cachedConnection) {
-      cachedConnection = connectDB();
+    try {
+      if (!cachedConnection) {
+        cachedConnection = connectDB().catch((err) => {
+          cachedConnection = null; // Reset cache on failure so next request retries
+          throw err;
+        });
+      }
+      await cachedConnection;
+      next();
+    } catch (err) {
+      next(err);
     }
-    await cachedConnection;
-    next();
   });
 } else {
   connectDB().then(() => {
