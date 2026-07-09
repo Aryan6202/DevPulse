@@ -46,6 +46,25 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth', authLimiter);
 
+// Database connection middleware for Serverless (Vercel)
+if (process.env.VERCEL) {
+  let cachedConnection = null;
+  app.use(async (req, res, next) => {
+    try {
+      if (!cachedConnection) {
+        cachedConnection = connectDB().catch((err) => {
+          cachedConnection = null; // Reset cache on failure so next request retries
+          throw err;
+        });
+      }
+      await cachedConnection;
+      next();
+    } catch (err) {
+      next(err);
+    }
+  });
+}
+
 // --- Routes ---
 app.get('/api/health', (req, res) => res.json({ status: 'ok', uptime: process.uptime() }));
 app.use('/api/auth', authRoutes);
@@ -63,23 +82,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-if (process.env.VERCEL) {
-  let cachedConnection = null;
-  app.use(async (req, res, next) => {
-    try {
-      if (!cachedConnection) {
-        cachedConnection = connectDB().catch((err) => {
-          cachedConnection = null; // Reset cache on failure so next request retries
-          throw err;
-        });
-      }
-      await cachedConnection;
-      next();
-    } catch (err) {
-      next(err);
-    }
-  });
-} else {
+if (!process.env.VERCEL) {
   connectDB().then(() => {
     app.listen(PORT, () => console.log(`DevPulse API running on port ${PORT}`));
   });
