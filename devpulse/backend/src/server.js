@@ -1,4 +1,6 @@
 require('dotenv').config();
+const mongoose = require('mongoose');
+mongoose.set('bufferCommands', false);
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');

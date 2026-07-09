@@ -76,7 +76,7 @@ const userProfileSchema = new mongoose.Schema(
       default: 'member',
     },
   },
-  { timestamps: true }
+  { timestamps: true, bufferCommands: false }
 );
 
 module.exports = mongoose.model('UserProfile', userProfileSchema);
