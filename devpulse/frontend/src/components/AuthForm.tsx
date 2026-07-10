@@ -50,6 +50,7 @@ export default function AuthForm() {
         type="password"
         placeholder="Password"
         minLength={8}
+        autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
         value={form.password}
         onChange={(e) => setForm({ ...form, password: e.target.value })}
         required
