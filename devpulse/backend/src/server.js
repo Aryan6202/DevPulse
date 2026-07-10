@@ -29,6 +29,14 @@ function isOriginAllowed(origin, allowedList) {
   if (!origin) return true;
   const normalizedOrigin = origin.trim().replace(/\/$/, '');
   
+  // Explicitly whitelist user's frontend deployment and Vercel subdomains
+  if (
+    normalizedOrigin === 'https://frontend-six-alpha-46.vercel.app' ||
+    normalizedOrigin.endsWith('.vercel.app')
+  ) {
+    return true;
+  }
+  
   for (const pattern of allowedList) {
     if (pattern === '*') return true;
     if (pattern === normalizedOrigin) return true;
