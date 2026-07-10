@@ -37,6 +37,7 @@ app.use(
   })
 );
 
+
 // Rate limit to reduce brute-force risk on auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
