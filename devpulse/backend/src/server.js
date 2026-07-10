@@ -81,8 +81,8 @@ app.use('/api/auth', authLimiter);
 if (process.env.VERCEL) {
   let cachedConnection = null;
   app.use(async (req, res, next) => {
-    // Skip database connection for preflight OPTIONS requests
-    if (req.method === 'OPTIONS') {
+    // Skip database connection for preflight OPTIONS and health check requests
+    if (req.method === 'OPTIONS' || req.path === '/api/health') {
       return next();
     }
     try {
