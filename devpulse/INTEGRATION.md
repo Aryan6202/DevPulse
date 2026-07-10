@@ -6,7 +6,7 @@
 - Backend allows cross-origin requests only from the origin(s) listed in
   `CLIENT_ORIGIN` (see `backend/src/server.js`), configured via `.env`.
 - In local dev: frontend on `http://localhost:5173`, backend on
-  `http://localhost:5000`. In production these become the deployed
+  `http://localhost:5002`. In production these become the deployed
   Vercel/Render URLs — update both `.env` files accordingly.
 
 ## Environment variables
