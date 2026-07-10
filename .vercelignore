@@ -1,0 +1,7 @@
+# Exclude all markdown files from Vercel uploads and builds
+*.md
+README.md
+devpulse/*.md
+devpulse/README.md
+devpulse/INTEGRATION.md
+devpulse/PERFORMANCE.md
