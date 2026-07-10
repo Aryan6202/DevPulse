@@ -2,7 +2,6 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 mongoose.set('bufferCommands', false);
 const express = require('express');
-const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
@@ -54,18 +53,22 @@ function isOriginAllowed(origin, allowedList) {
   return false;
 }
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (isOriginAllowed(origin, allowedOrigins)) {
-        return callback(null, true);
-      }
-      console.warn(`[CORS Blocked] Origin: ${origin}. Allowed:`, allowedOrigins);
-      return callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-  })
-);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && isOriginAllowed(origin, allowedOrigins)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  }
+
+  // Instantly handle preflight OPTIONS requests before any subsequent middleware is invoked
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+  
+  next();
+});
 
 
 // Rate limit to reduce brute-force risk on auth endpoints
