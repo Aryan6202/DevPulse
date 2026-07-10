@@ -15,9 +15,9 @@ The application is built using a complete MERN stack (MongoDB, Express, React, N
 6. [Security Hardening](#security-hardening)
 7. [Performance Optimizations](#performance-optimizations)
 8. [Step-by-Step Production Deployment](#step-by-step-production-deployment)
-   - [MongoDB Atlas Setup](#1-database-mongodb-atlas)
-   - [Backend Deployment on Render](#2-backend-api-on-render)
-   - [Frontend Deployment on Vercel](#3-frontend-on-vercel)
+   - [1. Database: MongoDB Atlas](#1-database-mongodb-atlas)
+   - [2. Backend: API on Render](#2-backend-api-on-render)
+   - [3. Frontend: On Vercel](#3-frontend-on-vercel)
 9. [Git Workflow](#git-workflow)
 
 ---
@@ -96,7 +96,7 @@ devpulse/
 ### 1. Repository Setup & Dependencies
 Clone the repository and install dependency groups for both applications:
 ```bash
-git clone <your-repository-url> devpulse
+git clone YOUR_REPOSITORY_URL devpulse
 cd devpulse
 
 # Install backend dependencies
@@ -115,7 +115,7 @@ Create a `.env` file in the `backend` and `frontend` directories using the refer
 ```env
 PORT=5002
 NODE_ENV=development
-MONGO_URI=mongodb+srv://<db_user>:<db_password>@cluster.mongodb.net/devpulse?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://YOUR_DB_USER:YOUR_DB_PASSWORD@cluster.mongodb.net/devpulse?retryWrites=true&w=majority
 JWT_SECRET=your_super_secret_jwt_random_string
 JWT_EXPIRES_IN=7d
 CLIENT_ORIGIN=http://localhost:5173
@@ -149,7 +149,7 @@ npm run dev
 ## API Reference
 
 All requests to protected endpoints require an authorization token provided in the header:
-`Authorization: Bearer <your_jwt_token>`
+`Authorization: Bearer YOUR_JWT_TOKEN`
 
 | Method | Endpoint | Auth Required | Description |
 |:---|:---|:---:|:---|
@@ -191,7 +191,7 @@ Follow these instructions to deploy the application into a live environment.
 1. Sign in to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and create a database cluster (the free Tier cluster is sufficient).
 2. Navigate to **Database Access** and click **Add New Database User**. Define a username, secure password, and select **Read and write to any database**.
 3. Navigate to **Network Access** and click **Add IP Address**. Choose **Allow Access From Anywhere** (`0.0.0.0/0`) or enter the dedicated IP addresses of your Render server.
-4. Go to the Database Deployment screen, click **Connect**, select **Drivers**, copy the connection string, and replace `<password>` and `<username>` with your database user credentials.
+4. Go to the Database Deployment screen, click **Connect**, select **Drivers**, copy the connection string, and replace YOUR_DATABASE_PASSWORD and YOUR_DATABASE_USERNAME with your database user credentials.
 
 ### 2. Backend: API on Render
 You can deploy using Render's Blueprint config (`render.yaml`) or manually:
