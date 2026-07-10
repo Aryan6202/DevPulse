@@ -81,6 +81,10 @@ app.use('/api/auth', authLimiter);
 if (process.env.VERCEL) {
   let cachedConnection = null;
   app.use(async (req, res, next) => {
+    // Skip database connection for preflight OPTIONS requests
+    if (req.method === 'OPTIONS') {
+      return next();
+    }
     try {
       if (!cachedConnection) {
         cachedConnection = connectDB().catch((err) => {
