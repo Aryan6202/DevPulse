@@ -23,14 +23,36 @@ app.use(express.json({ limit: '5mb' }));
 
 const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173')
   .split(',')
-  .map((o) => o.trim());
+  .map((o) => o.trim().replace(/\/$/, ''));
+
+function isOriginAllowed(origin, allowedList) {
+  if (!origin) return true;
+  const normalizedOrigin = origin.trim().replace(/\/$/, '');
+  
+  for (const pattern of allowedList) {
+    if (pattern === '*') return true;
+    if (pattern === normalizedOrigin) return true;
+    
+    // Support wildcard patterns like https://*.vercel.app
+    if (pattern.includes('*')) {
+      const regexPattern = new RegExp(
+        '^' + pattern.split('*').map(s => s.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')).join('.*') + '$'
+      );
+      if (regexPattern.test(normalizedOrigin)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (isOriginAllowed(origin, allowedOrigins)) {
         return callback(null, true);
       }
+      console.warn(`[CORS Blocked] Origin: ${origin}. Allowed:`, allowedOrigins);
       return callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
